@@ -1,0 +1,30 @@
+version: '3.6'
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./my.cnf:/etc/mysql/my.cnf
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  web:
+    build: .
+    volumes:
+      - ./app:/myapp/app
+      - ./lib:/myapp/lib
+      - ./config/routes.rb:/myapp/config/routes.rb
+      - ./db/migrate:/myapp/db/migrate
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    command: bash -c "bundle exec rake db:create db:migrate && rm -f /rails/tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0' "
+
+  redis: &redis
+    image: redis:5.0-alpine
+    ports:
+      - "6379"
+volumes:
+  db_data:
