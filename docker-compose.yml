@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
 
   web:
-    build: .
+    build: https://github.com/boopathimca2013/student.git
     volumes:
       - ./app:/myapp/app
       - ./lib:/myapp/lib
